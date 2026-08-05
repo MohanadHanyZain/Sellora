@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sellora - إنشاء حساب مسوق جديد</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryHover: '#4338ca',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <header class="w-full bg-white border-b border-slate-100 py-4 px-6 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-black text-lg shadow-md shadow-indigo-200">
+                S
+            </div>
+            <a href="index.html" class="text-xl font-black tracking-tight text-slate-900">Sellora</a>
+        </div>
+        <a href="login.html" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+            لديك حساب بالفعل؟ تسجيل الدخول
+        </a>
+    </header>
+
+    <!-- Main Register Container -->
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 p-8 sm:p-10">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-black text-slate-900 mb-2">انضم كمسوق جديد</h1>
+                <p class="text-sm text-slate-500">أنشئ حسابك المجاني وابدأ رحلة الأرباح أونلاين</p>
+            </div>
+
+            <!-- Error/Success Alert Box -->
+            <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm font-semibold"></div>
+
+            <!-- Register Form -->
+            <form id="register-form" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">الاسم الكامل</label>
+                    <input type="text" id="full_name" required 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all text-sm"
+                        placeholder="أدخل اسمك الثلاثي">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">رقم الهاتف (واتساب)</label>
+                    <input type="tel" id="phone" required 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all text-sm"
+                        placeholder="010xxxxxxxx">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="email" required 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all text-sm"
+                        placeholder="name@example.com">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">كلمة المرور</label>
+                    <input type="password" id="password" required minlength="6"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all text-sm"
+                        placeholder="•••••••• (6 أحرف على الأقل)">
+                </div>
+
+                <button type="submit" id="submit-btn"
+                    class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5 text-sm">
+                    إنشاء الحساب الان
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-6 text-xs text-slate-400 border-t border-slate-100 bg-white">
+        جميع الحقوق محفوظة منصة Sellora &copy; 2026
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script type="module">
+        import { supabase } from './js/supabaseClient.js';
+
+        const form = document.getElementById('register-form');
+        const alertBox = document.getElementById('alert-box');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('full_name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري إنشاء الحساب...';
+            alertBox.classList.add('hidden');
+
+            try {
+                // 1. تسجيل الحساب عبر Supabase Auth مع تمرير الاسم ورقم الهاتف في الـ metadata
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            phone: phone
+                        }
+                    }
+                });
+
+                if (error) throw error;
+
+                // إظهار رسالة النجاح
+                alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200';
+                alertBox.textContent = 'تم إنشاء الحساب بنجاح! جاري تحويلك إلى لوحة التحكم...';
+                alertBox.classList.remove('hidden');
+
+                setTimeout(() => {
+                    window.location.href = 'reseller-dash.html';
+                }, 1500);
+
+            } catch (err) {
+                alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-rose-50 text-rose-700 border border-rose-200';
+                alertBox.textContent = 'خطأ: ' + (err.message || 'حدث خطأ ما أثناء التسجيل');
+                alertBox.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إنشاء الحساب الان';
+            }
+        });
+    </script>
+</body>
+</html>
