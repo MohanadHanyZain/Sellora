@@ -26,8 +26,6 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: #f8fafc; color: #0f172a; }
     </style>
@@ -74,7 +72,7 @@
                     <label class="block text-xs font-semibold text-slate-600 mb-1">كلمة المرور</label>
                     <input type="password" id="register-password" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
                 </div>
-                <button type="submit" class="w-full py-3 bg-emeraldPrimary hover:bg-emeraldHover text-white font-semibold rounded-xl text-sm shadow-md transition-all">
+                <button type="submit" id="submit-btn" class="w-full py-3 bg-emeraldPrimary hover:bg-emeraldHover text-white font-semibold rounded-xl text-sm shadow-md transition-all">
                     إنشاء حساب مسوق
                 </button>
             </form>
@@ -99,11 +97,9 @@
         </div>
     </footer>
 
-    <!-- Supabase Configuration & Logic Script -->
-    <script>
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <!-- Supabase Logic Script (ES Module) -->
+    <script type="module">
+        import { supabase } from './js/supabaseClient.js';
 
         function showAlert(message, isError = true) {
             const alertBox = document.getElementById('alert-box');
@@ -115,8 +111,12 @@
         // Handle Register
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري إنشاء الحساب...';
 
             const { data, error } = await supabase.auth.signUp({
                 email: email,
@@ -125,6 +125,8 @@
 
             if (error) {
                 showAlert(error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إنشاء حساب مسوق';
             } else {
                 showAlert('تم إنشاء الحساب بنجاح! يتم توجيهك لتسجيل الدخول...', false);
                 setTimeout(() => {
