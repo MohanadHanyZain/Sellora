@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sellora - تسجيل الدخول / إنشاء حساب</title>
+    <title>Sellora - تسجيل الدخول</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div>
-                <a href="index.html" class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emeraldPrimary transition-colors"><i class="fa-solid fa-arrow-right ml-1"></i> الرئيسية</a>
+                <a href="register.html" class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emeraldPrimary transition-colors">إنشاء حساب</a>
             </div>
         </div>
     </header>
@@ -56,10 +56,9 @@
     <main class="flex-grow flex items-center justify-center px-4 py-12">
         <div class="max-w-md w-full bg-lightCard border border-lightBorder rounded-3xl p-8 shadow-xs space-y-6">
             
-            <!-- Tabs Header -->
-            <div class="flex rounded-xl bg-slate-100 p-1 border border-lightBorder">
-                <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-xs">تسجيل الدخول</button>
-                <button id="tab-register" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900">حساب جديد</button>
+            <div class="text-center space-y-1">
+                <h2 class="text-xl font-bold text-slate-900">تسجيل الدخول إلى حسابك</h2>
+                <p class="text-xs text-slate-500">أدخل بياناتك للوصول إلى لوحة التحكم</p>
             </div>
 
             <!-- Error / Success Alerts Container -->
@@ -69,7 +68,7 @@
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">البريد الإلكتروني</label>
-                    <input type="email5" id="login-email" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
+                    <input type="email" id="login-email" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">كلمة المرور</label>
@@ -80,20 +79,9 @@
                 </button>
             </form>
 
-            <!-- Register Form -->
-            <form id="register-form" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">البريد الإلكتروني</label>
-                    <input type="email" id="register-email" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">كلمة المرور</label>
-                    <input type="password" id="register-password" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
-                </div>
-                <button type="submit" class="w-full py-3 bg-emeraldPrimary hover:bg-emeraldHover text-white font-semibold rounded-xl text-sm shadow-md transition-all">
-                    إنشاء حساب مسوق
-                </button>
-            </form>
+            <div class="text-center text-xs text-slate-500 pt-2 border-t border-lightBorder">
+                ليس لديك حساب؟ <a href="register.html" class="text-emeraldPrimary font-semibold hover:underline">انضم إلينا الآن</a>
+            </div>
 
         </div>
     </main>
@@ -117,28 +105,6 @@
         const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function switchTab(mode) {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const tabLogin = document.getElementById('tab-login');
-            const tabRegister = document.getElementById('tab-register');
-            const alertBox = document.getElementById('alert-box');
-
-            alertBox.classList.add('hidden');
-
-            if (mode === 'login') {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                tabLogin.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-xs';
-                tabRegister.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900';
-            } else {
-                registerForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
-                tabRegister.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-xs';
-                tabLogin.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900';
-            }
-        }
-
         function showAlert(message, isError = true) {
             const alertBox = document.getElementById('alert-box');
             alertBox.textContent = message;
@@ -160,26 +126,7 @@
             if (error) {
                 showAlert(error.message);
             } else {
-                window.location.href = 'index.html'; // أو لوحة التحكم الخاصة بالمسوق
-            }
-        });
-
-        // Handle Register
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('register-email').value.trim();
-            const password = document.getElementById('register-password').value;
-
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                showAlert(error.message);
-            } else {
-                showAlert('تم إنشاء الحساب بنجاح! يجدر بك تسجيل الدخول الآن.', false);
-                switchTab('login');
+                window.location.href = 'index.html';
             }
         });
     </script>
