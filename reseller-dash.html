@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sellora - لوحة تحكم المسوق</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        primaryHover: '#1D4ED8',
+                        success: '#16A34A',
+                        warning: '#F59E0B',
+                        danger: '#DC2626',
+                        bgMain: '#F8FAFC',
+                        cardBg: '#FFFFFF',
+                        borderLine: '#E5E7EB',
+                        textPrimary: '#111827',
+                        textSecondary: '#6B7280'
+                    },
+                    borderRadius: {
+                        'xl': '12px',
+                    },
+                    boxShadow: {
+                        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts (Cairo & Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons (Unified Source) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', 'Inter', sans-serif; background-color: #F8FAFC; color: #111827; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #F8FAFC; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-bgMain text-textPrimary antialiased min-h-screen flex flex-col pb-20 sm:pb-0">
+
+    <!-- Toast Container (Top-Right Notifications) -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-4 sm:px-0"></div>
+
+    <!-- Top Header Navigation -->
+    <header class="w-full bg-cardBg border-b border-borderLine sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black text-xl shadow-md">
+                    S
+                </div>
+                <div>
+                    <span class="text-lg font-bold tracking-tight text-textPrimary block leading-tight">Sellora</span>
+                    <span class="text-[10px] font-semibold text-primary bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">شبكة التسويق بالعمولة</span>
+                </div>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden sm:flex items-center gap-1">
+                <button onclick="switchTab('dashboard')" id="top-nav-dashboard" class="px-4 py-2 rounded-xl text-xs font-semibold text-primary bg-blue-50 transition-all">
+                    <i class="fa-solid fa-chart-pie ml-1.5"></i> الرئيسية
+                </button>
+                <button onclick="switchTab('products')" id="top-nav-products" class="px-4 py-2 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100 transition-all">
+                    <i class="fa-solid fa-box ml-1.5"></i> المنتجات
+                </button>
+                <button onclick="switchTab('orders')" id="top-nav-orders" class="px-4 py-2 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100 transition-all">
+                    <i class="fa-solid fa-receipt ml-1.5"></i> طلباتي
+                </button>
+                <button onclick="switchTab('profile')" id="top-nav-profile" class="px-4 py-2 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100 transition-all">
+                    <i class="fa-solid fa-user ml-1.5"></i> حسابي
+                </button>
+            </nav>
+
+            <!-- User Info & Logout -->
+            <div class="flex items-center gap-3">
+                <span id="reseller-name-display" class="text-xs sm:text-sm font-semibold text-textPrimary hidden md:inline">مرحباً...</span>
+                <button id="logout-btn" class="h-10 px-3 py-2 text-xs font-semibold text-danger bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">تسجيل الخروج</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- 1. DASHBOARD OVERVIEW SECTION -->
+        <section id="section-dashboard" class="tab-content space-y-6">
+            <div class="bg-cardBg border border-borderLine rounded-xl p-6 shadow-md">
+                <h1 class="text-xl sm:text-2xl font-bold text-textPrimary" id="welcome-user-title">أهلاً بك</h1>
+                <p class="text-xs sm:text-sm text-textSecondary mt-1">نظرة عامة على أدائك وأرباحك اليوم في المنصة</p>
+            </div>
+
+            <!-- KPI Cards Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-cardBg border border-borderLine rounded-xl p-5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-textSecondary mb-2">
+                        <span class="text-xs font-semibold uppercase">إجمالي الطلبات</span>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-primary flex items-center justify-center">
+                            <i class="fa-solid fa-shopping-cart text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-bold text-textPrimary" id="stat-total-orders">0</div>
+                </div>
+
+                <div class="bg-cardBg border border-borderLine rounded-xl p-5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-textSecondary mb-2">
+                        <span class="text-xs font-semibold uppercase">تم التسليم</span>
+                        <div class="w-8 h-8 rounded-lg bg-green-50 text-success flex items-center justify-center">
+                            <i class="fa-solid fa-circle-check text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-bold text-textPrimary" id="stat-delivered-orders">0</div>
+                </div>
+
+                <div class="bg-cardBg border border-borderLine rounded-xl p-5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-textSecondary mb-2">
+                        <span class="text-xs font-semibold uppercase">قيد الانتظار</span>
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-warning flex items-center justify-center">
+                            <i class="fa-solid fa-clock text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-bold text-textPrimary" id="stat-pending-orders">0</div>
+                </div>
+
+                <div class="bg-cardBg border border-borderLine rounded-xl p-5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-textSecondary mb-2">
+                        <span class="text-xs font-semibold uppercase">الأرباح المحققة</span>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i class="fa-solid fa-wallet text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="text-2xl font-bold text-primary" id="stat-total-earnings">0 ج.م</div>
+                </div>
+            </div>
+
+            <div class="bg-blue-600 text-white rounded-xl p-6 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-bold text-base">ابدأ التسويق والبيع الآن!</h3>
+                    <p class="text-xs text-blue-100 mt-1">تصفح كتالوج المنتجات المتاحة واقترح على عملائك أفضل العروض بالعمولة.</p>
+                </div>
+                <button onclick="switchTab('products')" class="h-11 px-6 bg-white text-primary hover:bg-blue-50 rounded-xl font-semibold text-xs transition-all shadow-sm whitespace-nowrap">
+                    تصفح المنتجات <i class="fa-solid fa-arrow-left mr-1.5"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 2. PRODUCTS CATALOG SECTION -->
+        <section id="section-products" class="tab-content space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-textPrimary">كتالوج المنتجات</h1>
+                    <p class="text-xs sm:text-sm text-textSecondary mt-0.5">اختر المنتجات وابدأ في إنشاء الطلبات لعملائك</p>
+                </div>
+                <div class="w-full sm:w-64 relative">
+                    <input type="text" id="product-search-input" onkeyup="filterProducts()" placeholder="بحث باسم المنتج..." class="w-full h-11 pr-10 pl-4 rounded-xl border border-borderLine bg-cardBg text-xs text-textPrimary outline-none focus:border-primary">
+                    <i class="fa-solid fa-magnifying-glass absolute top-3.5 right-3.5 text-textSecondary text-xs"></i>
+                </div>
+            </div>
+
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-cardBg border border-borderLine rounded-xl p-4 shadow-md space-y-4 animate-pulse">
+                    <div class="w-full h-48 bg-slate-200 rounded-xl"></div>
+                    <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                    <div class="h-3 bg-slate-200 rounded w-1/2"></div>
+                    <div class="h-10 bg-slate-200 rounded-xl w-full"></div>
+                </div>
+            </div>
+
+            <div id="products-empty-state" class="hidden bg-cardBg border border-borderLine rounded-xl p-12 text-center space-y-3 shadow-md">
+                <div class="text-4xl text-slate-300"><i class="fa-solid fa-box-open"></i></div>
+                <h3 class="text-base font-bold text-textPrimary">لا توجد منتجات متاحة حالياً</h3>
+                <p class="text-xs text-textSecondary">يرجى العودة لاحقاً أو التحقق من قسم التحديثات.</p>
+            </div>
+        </section>
+
+        <!-- 3. MY ORDERS SECTION -->
+        <section id="section-orders" class="tab-content space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-textPrimary">متابعة طلباتي</h1>
+                    <p class="text-xs sm:text-sm text-textSecondary mt-0.5">تتبع حالة طلبات عملاءك ومقدار العمولات</p>
+                </div>
+            </div>
+
+            <div class="hidden sm:block bg-cardBg border border-borderLine rounded-xl shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-borderLine text-xs font-semibold text-textSecondary uppercase tracking-wider">
+                                <th class="py-3.5 px-4">رقم التتبع (Tracking)</th>
+                                <th class="py-3.5 px-4">المنتج</th>
+                                <th class="py-3.5 px-4">العميل</th>
+                                <th class="py-3.5 px-4">الحالة</th>
+                                <th class="py-3.5 px-4">العمولة</th>
+                                <th class="py-3.5 px-4">التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody-desktop" class="divide-y divide-borderLine text-xs sm:text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="orders-cards-mobile" class="sm:hidden space-y-4"></div>
+
+            <div id="orders-empty-state" class="hidden bg-cardBg border border-borderLine rounded-xl p-12 text-center space-y-3 shadow-md">
+                <div class="text-4xl text-slate-300"><i class="fa-solid fa-receipt"></i></div>
+                <h3 class="text-base font-bold text-textPrimary">لا توجد طلبات بعد</h3>
+                <p class="text-xs text-textSecondary">أنشئ طلبك الأول من قائمة المنتجات المتاحة.</p>
+                <button onclick="switchTab('products')" class="h-11 px-5 bg-primary hover:bg-primaryHover text-white rounded-xl text-xs font-semibold shadow-md transition-all">
+                    الانتقال للمنتجات
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. PROFILE SECTION -->
+        <section id="section-profile" class="tab-content space-y-6 hidden">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-textPrimary">الملف الشخصي للمسوق</h1>
+                <p class="text-xs sm:text-sm text-textSecondary mt-0.5">إدارة بيانات حسابك وسحب العمولات</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Profile Card -->
+                <div class="bg-cardBg border border-borderLine rounded-xl p-6 shadow-md flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 rounded-full bg-blue-100 text-primary flex items-center justify-center font-bold text-2xl border-2 border-primary">
+                        <i class="fa-solid fa-user text-3xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-textPrimary" id="profile-name">---</h2>
+                        <span class="text-xs text-textSecondary font-mono block mt-1" id="profile-id">RES-XXXX</span>
+                    </div>
+                    <div class="w-full pt-4 border-t border-borderLine text-xs text-right space-y-2 text-textSecondary">
+                        <div class="flex justify-between items-center gap-2"><span>الهاتف:</span> <strong id="profile-phone" class="text-textPrimary truncate">---</strong></div>
+                        <div class="flex justify-between items-center gap-2"><span>البريد:</span> <strong id="profile-email" class="text-textPrimary truncate">---</strong></div>
+                    </div>
+                </div>
+
+                <!-- Earnings & Withdraw Request Card -->
+                <div class="lg:col-span-2 bg-cardBg border border-borderLine rounded-xl p-6 shadow-md space-y-6">
+                    <h3 class="text-sm font-bold text-textPrimary uppercase border-b border-borderLine pb-3">ملخص الحساب والسحب</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-borderLine">
+                            <span class="text-xs text-textSecondary block">العمولات المؤكدة المدفوعة</span>
+                            <span class="text-xl font-bold text-success mt-1 block truncate" id="profile-paid-commission">0 ج.م</span>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-borderLine">
+                            <span class="text-xs text-textSecondary block">العمولات المعلقة/المتاحة</span>
+                            <span class="text-xl font-bold text-primary mt-1 block truncate" id="profile-pending-commission">0 ج.م</span>
+                        </div>
+                    </div>
+
+                    <form id="withdrawal-form" class="space-y-4 pt-2">
+                        <h4 class="text-xs font-bold text-textPrimary">طلب سحب جديد</h4>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="number" id="withdraw-amount" min="1" step="0.01" required placeholder="المبلغ المطلوب بالجنيه" class="flex-grow h-11 px-4 rounded-xl border border-borderLine bg-cardBg text-xs text-textPrimary outline-none focus:border-primary">
+                            <button type="submit" id="withdraw-btn" class="h-11 px-6 bg-primary hover:bg-primaryHover text-white font-semibold rounded-xl text-xs shadow-md transition-all whitespace-nowrap">
+                                تقديم الطلب
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION BAR (<640px) -->
+    <nav class="sm:hidden fixed bottom-0 inset-x-0 bg-cardBg border-t border-borderLine z-40 flex justify-around items-center h-16 shadow-lg">
+        <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="flex flex-col items-center gap-1 text-primary">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[10px] font-semibold">الرئيسية</span>
+        </button>
+        <button onclick="switchTab('products')" id="mobile-nav-products" class="flex flex-col items-center gap-1 text-textSecondary">
+            <i class="fa-solid fa-box text-lg"></i>
+            <span class="text-[10px] font-semibold">المنتجات</span>
+        </button>
+        <button onclick="switchTab('orders')" id="mobile-nav-orders" class="flex flex-col items-center gap-1 text-textSecondary">
+            <i class="fa-solid fa-receipt text-lg"></i>
+            <span class="text-[10px] font-semibold">طلباتي</span>
+        </button>
+        <button onclick="switchTab('profile')" id="mobile-nav-profile" class="flex flex-col items-center gap-1 text-textSecondary">
+            <i class="fa-solid fa-user text-lg"></i>
+            <span class="text-[10px] font-semibold">الحساب</span>
+        </button>
+    </nav>
+
+    <!-- PRODUCT DETAILS & GALLERY MODAL -->
+    <div id="product-details-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-borderLine rounded-xl max-w-xl w-full p-6 shadow-md space-y-5 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-borderLine pb-3">
+                <h3 id="detail-product-title" class="text-base font-bold text-textPrimary">تفاصيل المنتج</h3>
+                <button onclick="closeProductDetailsModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-textSecondary transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Gallery Main View & Thumbnails -->
+            <div class="space-y-3">
+                <div class="w-full h-64 bg-slate-100 rounded-xl overflow-hidden border border-borderLine flex items-center justify-center">
+                    <img id="detail-main-image" src="" class="w-full h-full object-cover">
+                </div>
+                <div id="detail-thumbnails-container" class="grid grid-cols-5 gap-2"></div>
+            </div>
+
+            <div class="space-y-2 text-xs">
+                <div class="flex justify-between items-center font-semibold text-textSecondary border-b border-borderLine pb-2">
+                    <span>سعر البيع المقترح: <strong id="detail-suggested-price" class="text-textPrimary">---</strong></span>
+                    <span>عمولتك: <strong id="detail-commission" class="text-success">---</strong></span>
+                </div>
+                <div>
+                    <span class="font-bold text-textPrimary block mb-1">وصف المنتج:</span>
+                    <p id="detail-description" class="text-textSecondary leading-relaxed bg-slate-50 p-3 rounded-xl border border-borderLine whitespace-pre-line"></p>
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons (Copy & Download Images) -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button id="modal-copy-desc-btn" class="h-10 bg-slate-100 hover:bg-slate-200 text-textSecondary font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-copy"></i> نسخ الوصف
+                </button>
+                <button id="modal-download-img-btn" class="h-10 bg-slate-100 hover:bg-slate-200 text-textSecondary font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-download"></i> تحميل جميع الصور
+                </button>
+            </div>
+
+            <div class="flex gap-3 pt-2 border-t border-borderLine">
+                <button onclick="closeProductDetailsModal()" class="w-full h-11 bg-primary hover:bg-primaryHover text-white font-semibold rounded-xl text-xs transition-all shadow-md">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE CUSTOMER ORDER MODAL -->
+    <div id="create-order-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-borderLine rounded-xl max-w-md w-full p-6 shadow-md space-y-5 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-borderLine pb-3">
+                <h3 class="text-base font-bold text-textPrimary">إنشاء طلب عميل جديد</h3>
+                <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-textSecondary transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="order-form" class="space-y-4">
+                <input type="hidden" id="modal-product-id">
+                <input type="hidden" id="modal-product-commission">
+
+                <div class="bg-slate-50 border border-borderLine p-3 rounded-xl flex items-center justify-between text-xs">
+                    <span class="font-bold text-textPrimary" id="modal-product-title">---</span>
+                    <span class="text-primary font-bold" id="modal-product-price">---</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-textPrimary mb-1">اسم العميل بالكامل</label>
+                    <input type="text" id="order-customer-name" required placeholder="أدخل اسم العميل" class="w-full h-11 px-4 rounded-xl border border-borderLine bg-cardBg text-xs text-textPrimary outline-none focus:border-primary">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-textPrimary mb-1">رقم الهاتف</label>
+                    <input type="tel" id="order-customer-phone" required placeholder="01xxxxxxxxx" class="w-full h-11 px-4 rounded-xl border border-borderLine bg-cardBg text-xs text-textPrimary outline-none focus:border-primary">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-textPrimary mb-1">رقم هاتف بديل (اختياري)</label>
+                    <input type="tel" id="order-customer-alt-phone" placeholder="رقم آخر للتأكيد" class="w-full h-11 px-4 rounded-xl border border-borderLine bg-cardBg text-xs text-textPrimary outline-none focus:border-primary">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-textPrimary mb-1">العنوان التفصيلي (المحافظة / المدينة / الشارع)</label>
+                    <textarea id="order-customer-address" rows="2" required placeholder="عنوان التسليم بالتفصيل..." class="w-full p-3 rounded-xl border border-borderLine bg-cardBg text-xs text-textPrimary outline-none focus:border-primary"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-textPrimary mb-1">الكمية</label>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="adjustQuantity(-1)" class="w-10 h-10 rounded-xl bg-slate-100 font-bold text-textPrimary border border-borderLine">-</button>
+                        <span id="order-quantity" class="font-bold text-sm w-8 text-center">1</span>
+                        <button type="button" onclick="adjustQuantity(1)" class="w-10 h-10 rounded-xl bg-slate-100 font-bold text-textPrimary border border-borderLine">+</button>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-borderLine flex justify-between items-center text-xs">
+                    <span class="font-semibold text-textSecondary">عمولتك المتوقعة:</span>
+                    <span class="text-sm font-bold text-success" id="modal-total-commission">0 ج.م</span>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeOrderModal()" class="w-1/2 h-11 bg-slate-100 hover:bg-slate-200 text-textSecondary font-semibold rounded-xl text-xs transition-all">إلغاء</button>
+                    <button type="submit" id="submit-order-btn" class="w-1/2 h-11 bg-primary hover:bg-primaryHover text-white font-semibold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                        <span>إرسال الطلب</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic Module -->
+    <script type="module">
+        import { supabase } from './js/supabaseClient.js';
+
+        let currentResellerProfile = null;
+        let allProductsList = [];
+        let currentOrderQuantity = 1;
+
+        window.showToast = (message, type = 'success') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-green-600 text-white' : type === 'warning' ? 'bg-amber-500 text-white' : 'bg-red-600 text-white';
+            const icon = type === 'success' ? 'fa-circle-check' : type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-xmark';
+
+            toast.className = `p-3.5 rounded-xl shadow-md ${bgClass} flex items-center gap-3 text-xs font-semibold transition-all duration-300 transform translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        };
+
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('header nav button').forEach(btn => {
+                btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-textSecondary hover:text-textPrimary hover:bg-slate-100 transition-all';
+            });
+            const activeTopBtn = document.getElementById(`top-nav-${tabId}`);
+            if (activeTopBtn) activeTopBtn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-primary bg-blue-50 transition-all';
+
+            document.querySelectorAll('nav.sm\\:hidden button').forEach(btn => {
+                btn.className = 'flex flex-col items-center gap-1 text-textSecondary';
+            });
+            const activeMobileBtn = document.getElementById(`mobile-nav-${tabId}`);
+            if (activeMobileBtn) activeMobileBtn.className = 'flex flex-col items-center gap-1 text-primary';
+        };
+
+        async function checkResellerAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            if (!profile || profile.role !== 'reseller') {
+                showToast('غير مسموح بزيارة هذه الصفحة لغير المسوقين', 'danger');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentResellerProfile = profile;
+            document.getElementById('reseller-name-display').textContent = `مرحباً، ${profile.full_name || 'مسوق'}`;
+            document.getElementById('welcome-user-title').textContent = `أهلاً بك، ${profile.full_name || 'عزيزي المسوق'}`;
+
+            document.getElementById('profile-name').textContent = profile.full_name || 'غير محدد';
+            document.getElementById('profile-id').textContent = `RES-${profile.id.substring(0, 6).toUpperCase()}`;
+            document.getElementById('profile-phone').textContent = profile.phone || 'غير مسجل';
+            document.getElementById('profile-email').textContent = session.user.email;
+
+            loadDashboardStats();
+            loadProductsCatalog();
+            loadResellerOrders();
+        }
+
+        async function loadDashboardStats() {
+            if (!currentResellerProfile) return;
+
+            const { data: orders } = await supabase.from('orders').select('*').eq('reseller_id', currentResellerProfile.id);
+            
+            if (orders) {
+                const total = orders.length;
+                const delivered = orders.filter(o => o.status === 'Delivered').length;
+                const pending = orders.filter(o => o.status === 'Pending').length;
+                
+                const earnings = orders
+                    .filter(o => o.status === 'Delivered')
+                    .reduce((sum, o) => sum + (o.commission || 0), 0);
+
+                const pendingEarnings = orders
+                    .filter(o => o.status === 'Pending' || o.status === 'Processing' || o.status === 'Shipped')
+                    .reduce((sum, o) => sum + (o.commission || 0), 0);
+
+                document.getElementById('stat-total-orders').textContent = total;
+                document.getElementById('stat-delivered-orders').textContent = delivered;
+                document.getElementById('stat-pending-orders').textContent = pending;
+                document.getElementById('stat-total-earnings').textContent = `${earnings} ج.م`;
+
+                document.getElementById('profile-paid-commission').textContent = `${earnings} ج.م`;
+                document.getElementById('profile-pending-commission').textContent = `${pendingEarnings} ج.م`;
+            }
+        }
+
+        async function loadProductsCatalog() {
+            const grid = document.getElementById('products-grid');
+            const emptyState = document.getElementById('products-empty-state');
+
+            const { data: products } = await supabase.from('products').select('*').eq('is_active', true).order('created_at', { ascending: false });
+
+            if (!products || products.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            allProductsList = products;
+            renderProductsGrid(products);
+        }
+
+        function renderProductsGrid(list) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = list.map(p => `
+                <div class="bg-cardBg border border-borderLine rounded-xl p-4 shadow-md flex flex-col justify-between space-y-3">
+                    <div class="space-y-3 cursor-pointer" onclick='openProductDetails(${JSON.stringify(p)})'>
+                        <img src="${p.images?.[0] || 'https://via.placeholder.com/300'}" class="w-full h-48 object-cover rounded-xl border border-borderLine">
+                        <h3 class="font-bold text-sm text-textPrimary line-clamp-1">${p.title}</h3>
+                        
+                        <div class="flex justify-between items-center text-xs pt-1 border-t border-borderLine">
+                            <div>
+                                <span class="text-textSecondary block text-[10px]">سعر البيع:</span>
+                                <span class="font-bold text-textPrimary">${p.suggested_price} ج.م</span>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-textSecondary block text-[10px]">عمولتك:</span>
+                                <span class="font-bold text-success">+${p.reseller_commission} ج.م</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="copyDescription('${encodeURIComponent(p.description || p.title)}')" class="h-9 bg-slate-100 hover:bg-slate-200 text-textSecondary font-semibold rounded-xl text-[11px] transition-all flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-copy text-[10px]"></i> نسخ الوصف
+                            </button>
+                            <button onclick='downloadAllImages(${JSON.stringify(p.images || [])})' class="h-9 bg-slate-100 hover:bg-slate-200 text-textSecondary font-semibold rounded-xl text-[11px] transition-all flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-download text-[10px]"></i> تحميل الصور
+                            </button>
+                        </div>
+                        <button onclick='openOrderModal(${JSON.stringify(p)})' class="w-full h-11 bg-primary hover:bg-primaryHover text-white font-semibold rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> إنشاء طلب للعميل
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.filterProducts = () => {
+            const query = document.getElementById('product-search-input').value.toLowerCase();
+            const filtered = allProductsList.filter(p => p.title.toLowerCase().includes(query));
+            renderProductsGrid(filtered);
+        };
+
+        window.copyDescription = (desc) => {
+            navigator.clipboard.writeText(decodeURIComponent(desc));
+            showToast('تم نسخ الوصف بنجاح!', 'success');
+        };
+
+        // Robust Download All Images Feature using Blob
+        window.downloadAllImages = async (imagesArray) => {
+            if (!imagesArray || imagesArray.length === 0) {
+                showToast('لا توجد صور للتحميل لهذا المنتج', 'warning');
+                return;
+            }
+            showToast(`جاري تجهيز وتحميل ${imagesArray.length} صورة دفعة واحدة...`, 'success');
+
+            for (let i = 0; i < imagesArray.length; i++) {
+                try {
+                    const response = await fetch(imagesArray[i]);
+                    const blob = await response.blob();
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = blobUrl;
+                    a.download = `product_image_${i + 1}.jpg`;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    window.URL.revokeObjectURL(blobUrl);
+                    document.body.removeChild(a);
+                    
+                    // Small delay between downloads to prevent browser throttling
+                    await new Promise(resolve => setTimeout(resolve, 400));
+                } catch (err) {
+                    console.error('Download error:', err);
+                }
+            }
+        };
+
+        // Open Product Details & Gallery Modal
+        window.openProductDetails = (p) => {
+            document.getElementById('detail-product-title').textContent = p.title;
+            document.getElementById('detail-suggested-price').textContent = `${p.suggested_price} ج.م`;
+            document.getElementById('detail-commission').textContent = `+${p.reseller_commission} ج.م`;
+            document.getElementById('detail-description').textContent = p.description || 'لا يوجد وصف متاح لهذا المنتج.';
+
+            const images = p.images && p.images.length > 0 ? p.images : ['https://via.placeholder.com/300'];
+            const mainImg = document.getElementById('detail-main-image');
+            mainImg.src = images[0];
+
+            const thumbContainer = document.getElementById('detail-thumbnails-container');
+            thumbContainer.innerHTML = images.map((img, idx) => `
+                <div onclick="document.getElementById('detail-main-image').src='${img}'" class="w-full h-16 rounded-lg overflow-hidden border border-borderLine cursor-pointer hover:border-primary transition-all">
+                    <img src="${img}" class="w-full h-full object-cover">
+                </div>
+            `).join('');
+
+            // Bind actions inside modal buttons
+            document.getElementById('modal-copy-desc-btn').onclick = () => copyDescription(encodeURIComponent(p.description || p.title));
+            document.getElementById('modal-download-img-btn').onclick = () => downloadAllImages(p.images || []);
+
+            document.getElementById('product-details-modal').classList.remove('hidden');
+        };
+
+        window.closeProductDetailsModal = () => {
+            document.getElementById('product-details-modal').classList.add('hidden');
+        };
+
+        window.openOrderModal = (p) => {
+            document.getElementById('modal-product-id').value = p.id;
+            document.getElementById('modal-product-commission').value = p.reseller_commission;
+            document.getElementById('modal-product-title').textContent = p.title;
+            document.getElementById('modal-product-price').textContent = `${p.suggested_price} ج.م`;
+            
+            currentOrderQuantity = 1;
+            document.getElementById('order-quantity').textContent = '1';
+            updateModalCommission(p.reseller_commission);
+
+            document.getElementById('order-form').reset();
+            document.getElementById('create-order-modal').classList.remove('hidden');
+            
+            setTimeout(() => document.getElementById('order-customer-name').focus(), 100);
+        };
+
+        window.closeOrderModal = () => {
+            document.getElementById('create-order-modal').classList.add('hidden');
+        };
+
+        window.adjustQuantity = (delta) => {
+            currentOrderQuantity = Math.max(1, currentOrderQuantity + delta);
+            document.getElementById('order-quantity').textContent = currentOrderQuantity;
+            const unitComm = parseFloat(document.getElementById('modal-product-commission').value || 0);
+            updateModalCommission(unitComm);
+        };
+
+        function updateModalCommission(unitComm) {
+            document.getElementById('modal-total-commission').textContent = `${unitComm * currentOrderQuantity} ج.م`;
+        }
+
+        document.getElementById('order-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-order-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>جاري الإرسال...</span>`;
+
+            const product_id = document.getElementById('modal-product-id').value;
+            const customer_name = document.getElementById('order-customer-name').value.trim();
+            const customer_phone = document.getElementById('order-customer-phone').value.trim();
+            const customer_alt_phone = document.getElementById('order-customer-alt-phone').value.trim();
+            const customer_address = document.getElementById('order-customer-address').value.trim();
+            const unitComm = parseFloat(document.getElementById('modal-product-commission').value || 0);
+            const commission = unitComm * currentOrderQuantity;
+            const tracking_code = `TRK-${Math.floor(100000 + Math.random() * 900000)}`;
+
+            try {
+                const { error } = await supabase.from('orders').insert([{
+                    reseller_id: currentResellerProfile.id,
+                    product_id,
+                    customer_name,
+                    customer_phone,
+                    customer_alt_phone,
+                    customer_address,
+                    quantity: currentOrderQuantity,
+                    commission,
+                    status: 'Pending',
+                    tracking_code
+                }]);
+
+                if (error) throw error;
+
+                showToast('🟢 تم إرسال الطلب بنجاح!', 'success');
+                closeOrderModal();
+                loadDashboardStats();
+                loadResellerOrders();
+            } catch (err) {
+                showToast(`🔴 فشل إرسال الطلب: ${err.message}`, 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>إرسال الطلب</span>`;
+            }
+        });
+
+        async function loadResellerOrders() {
+            if (!currentResellerProfile) return;
+
+            const desktopBody = document.getElementById('orders-tbody-desktop');
+            const mobileContainer = document.getElementById('orders-cards-mobile');
+            const emptyState = document.getElementById('orders-empty-state');
+
+            const { data: orders } = await supabase
+                .from('orders')
+                .select(`*, products(title)`)
+                .eq('reseller_id', currentResellerProfile.id)
+                .order('created_at', { ascending: false });
+
+            if (!orders || orders.length === 0) {
+                desktopBody.innerHTML = '';
+                mobileContainer.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            const getStatusBadge = (status) => {
+                switch (status) {
+                    case 'Pending': return `<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">معلق</span>`;
+                    case 'Processing': return `<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">قيد المعالجة</span>`;
+                    case 'Shipped': return `<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">تم الشحن</span>`;
+                    case 'Delivered': return `<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-green-50 text-green-700 border border-green-200">تم التسليم</span>`;
+                    case 'Cancelled': return `<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-red-50 text-red-700 border border-red-200">ملغي</span>`;
+                    default: return `<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200">مرجع</span>`;
+                }
+            };
+
+            desktopBody.innerHTML = orders.map(o => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-primary">${o.tracking_code || 'TRK-' + o.id}</td>
+                    <td class="py-3.5 px-4 font-semibold text-textPrimary">${o.products?.title || 'منتج محذوف'} (${o.quantity || 1})</td>
+                    <td class="py-3.5 px-4 text-textSecondary">${o.customer_name}</td>
+                    <td class="py-3.5 px-4">${getStatusBadge(o.status)}</td>
+                    <td class="py-3.5 px-4 font-bold text-success">+${o.commission} ج.م</td>
+                    <td class="py-3.5 px-4 text-xs text-textSecondary">${new Date(o.created_at).toLocaleDateString('ar-EG')}</td>
+                </tr>
+            `).join('');
+
+            mobileContainer.innerHTML = orders.map(o => `
+                <div class="bg-cardBg border border-borderLine rounded-xl p-4 shadow-md space-y-3">
+                    <div class="flex justify-between items-center border-b border-borderLine pb-2">
+                        <span class="font-mono text-xs font-bold text-primary">${o.tracking_code || 'TRK-' + o.id}</span>
+                        ${getStatusBadge(o.status)}
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-textPrimary">${o.products?.title || 'منتج محذوف'}</h4>
+                        <p class="text-xs text-textSecondary mt-1">العميل: ${o.customer_name} (${o.customer_phone})</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-borderLine text-xs">
+                        <span class="text-textSecondary">${new Date(o.created_at).toLocaleDateString('ar-EG')}</span>
+                        <span class="font-bold text-success text-sm">+${o.commission} ج.م</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('withdrawal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            
+            try {
+                const { error } = await supabase.from('withdrawals').insert([{
+                    reseller_id: currentResellerProfile.id,
+                    amount,
+                    status: 'Pending'
+                }]);
+                if (error) throw error;
+                showToast('تم تقديم طلب السحب بنجاح للمراجعة', 'success');
+                document.getElementById('withdrawal-form').reset();
+            } catch (err) {
+                showToast(`خطأ في الطلب: ${err.message}`, 'danger');
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        checkResellerAuth();
+    </script>
+</body>
+</html>
