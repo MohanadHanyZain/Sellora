@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sellora - منصة التسويق بالعمولة</title>
+    <title>Sellora - منصة التسويق بالعمولة الأولى</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,157 +11,103 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#4f46e5',
-                        primaryHover: '#4338ca',
+                        lightBg: '#f8fafc',
+                        lightCard: '#ffffff',
+                        lightBorder: '#e2e8f0',
+                        emeraldPrimary: '#059669',
+                        emeraldHover: '#047857',
+                        emeraldLight: '#ecfdf5',
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts (IBM Plex Sans Arabic) -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Cairo', sans-serif; }
-        .bg-gradient-main {
-            background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
-        }
+        body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: #f8fafc; color: #0f172a; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-lightBg text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
     <!-- Navbar -->
-    <header class="w-full bg-white/80 backdrop-blur-md border-b border-slate-100 py-4 px-6 flex justify-between items-center shadow-sm sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-200">
-                S
+    <header class="w-full bg-lightCard border-b border-lightBorder py-4 px-4 sm:px-8 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emeraldPrimary flex items-center justify-center text-white font-bold text-xl shadow-sm">
+                    S
+                </div>
+                <div>
+                    <span class="text-lg font-bold tracking-tight text-slate-900 block leading-tight">Sellora</span>
+                    <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">منصة التسويق</span>
+                </div>
             </div>
-            <span class="text-2xl font-black tracking-tight text-slate-900">Sellora</span>
-        </div>
-        <div class="flex items-center gap-3">
-            <a href="login.html" class="px-5 py-2.5 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">تسجيل الدخول</a>
-            <a href="register.html" class="px-5 py-2.5 text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5">انضم كمسوق</a>
+            <div class="flex items-center gap-3">
+                <a href="login.html" class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emeraldPrimary transition-colors">تسجيل الدخول</a>
+                <a href="login.html" class="px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-emeraldPrimary hover:bg-emeraldHover rounded-xl shadow-xs transition-all">ابدأ الآن</a>
+            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <main class="flex-grow flex items-center justify-center px-6 py-16 bg-gradient-main">
-        <div class="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            <!-- Text Content -->
-            <div class="space-y-6 text-center lg:text-right">
-                <span class="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full border border-indigo-100">🚀 منصة التسويق بالعمولة</span>
-                <h1 class="text-4xl sm:text-5xl font-black leading-tight text-slate-900">
-                    اربح عمولات تصل إلى <span class="text-indigo-600">50%</span> <br>من كل عملية بيع
-                </h1>
-                <p class="text-lg text-slate-600 max-w-lg mx-auto lg:mx-0">
-                    انضم إلى آلاف المسوقين الذين يحققون أرباحاً شهرية من خلال تسويق منتجات حصرية عبر واتساب وفيسبوك وانستغرام.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="register.html" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-indigo-200 transition-all transform hover:-translate-y-1 text-sm flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-rocket"></i> ابدأ الآن مجاناً
-                    </a>
-                    <a href="login.html" class="px-8 py-4 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-2xl border border-slate-200 transition-all text-sm flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i> تسجيل الدخول
-                    </a>
-                </div>
+    <main class="flex-grow">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center space-y-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+                <i class="fa-solid fa-bolt"></i> ابدأ عملك الحر وحقق أرباحاً مضاعفة
             </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight max-w-3xl mx-auto leading-tight">
+                منصتك الأسهل لتسويق المنتجات وتحقيق أعلى الأرباح اليومية
+            </h1>
+            <p class="text-sm sm:text-base text-slate-500 max-w-2xl mx-auto">
+                تصفح مئات المنتجات الرابحة، انسخ تفاصيلها ومنشورات التسويق، وأرسل طلبات عملائك بكل سهولة مع ضمان استلام أرباحك فوراً.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+                <a href="login.html" class="w-full sm:w-auto px-8 py-3.5 bg-emeraldPrimary hover:bg-emeraldHover text-white font-semibold rounded-2xl text-sm shadow-md transition-all">
+                    انضم كمسوق الآن
+                </a>
+            </div>
+        </section>
 
-            <!-- Features Cards / Illustration -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-md shadow-slate-100 border border-slate-100 text-center space-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto text-emerald-600 text-2xl">
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-sm">أرباح فورية</h3>
-                    <p class="text-[11px] text-slate-500">عمولات تظهر فور إتمام الطلب</p>
+        <!-- Features Grid -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-lightCard border border-lightBorder rounded-2xl p-6 shadow-xs space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fa-solid fa-box-open"></i>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-md shadow-slate-100 border border-slate-100 text-center space-y-2 mt-6">
-                    <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto text-blue-600 text-2xl">
-                        <i class="fa-solid fa-box-open"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-sm">منتجات متنوعة</h3>
-                    <p class="text-[11px] text-slate-500">اختر من بين مئات المنتجات الحصرية</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-md shadow-slate-100 border border-slate-100 text-center space-y-2 -mt-4">
-                    <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto text-purple-600 text-2xl">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-sm">دعم على مدار الساعة</h3>
-                    <p class="text-[11px] text-slate-500">فريق دعم متخصص لمساعدتك</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-md shadow-slate-100 border border-slate-100 text-center space-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto text-amber-600 text-2xl">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-sm">إحصائيات متقدمة</h3>
-                    <p class="text-[11px] text-slate-500">تابع أدائك وأرباحك بكل دقة</p>
-                </div>
+                <h3 class="font-bold text-slate-900 text-base">منتجات رابحة ومضمونة</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">نتيح لك منتجات عالية الطلب مع هوامش ربح ممتازة تضمن لك نجاح حملاتك التسويقية.</p>
             </div>
-        </div>
+            <div class="bg-lightCard border border-lightBorder rounded-2xl p-6 shadow-xs space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3 class="font-bold text-slate-900 text-base">لوحة تحكم متقدمة</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">تابِع طلباتك، أرباحك المتاحة، وحالة الشحن لحظة بلحظة وبكل شفافية.</p>
+            </div>
+            <div class="bg-lightCard border border-lightBorder rounded-2xl p-6 shadow-xs space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-bold">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <h3 class="font-bold text-slate-900 text-base">سحب أرباح سريع وسهل</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">اطلب سحب أرباحك في أي وقت بالطريقة التي تناسبك وبدون تعقيدات.</p>
+            </div>
+        </section>
     </main>
 
-    <!-- في قسم footer داخل index.html أضف هذا القسم -->
-<footer class="w-full bg-white border-t border-slate-100 py-8">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-right">
-        <div>
-            <h4 class="font-bold text-slate-900 text-sm mb-3">Sellora</h4>
-            <p class="text-xs text-slate-500 leading-relaxed">منصة التسويق بالعمولة الرائدة في مصر والوطن العربي.</p>
-            <div class="flex gap-3 mt-3">
-                <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-brands fa-facebook text-base"></i></a>
-                <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-brands fa-instagram text-base"></i></a>
-                <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-brands fa-youtube text-base"></i></a>
+    <!-- Footer -->
+    <footer class="w-full bg-lightCard border-t border-lightBorder py-8 px-4 sm:px-8 mt-16">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+            <div>
+                جميع الحقوق محفوظة منصة Sellora &copy; 2026
+            </div>
+            <div class="flex items-center gap-6 font-semibold">
+                <a href="terms.html" class="hover:text-emeraldPrimary transition-colors">شروط الاستخدام</a>
+                <a href="privacy.html" class="hover:text-emeraldPrimary transition-colors">سياسة الخصوصية</a>
             </div>
         </div>
-        <div>
-            <h4 class="font-bold text-slate-900 text-sm mb-3">روابط سريعة</h4>
-            <ul class="space-y-2 text-xs">
-                <li><a href="index.html" class="text-slate-500 hover:text-indigo-600 transition-colors">الرئيسية</a></li>
-                <li><a href="register.html" class="text-slate-500 hover:text-indigo-600 transition-colors">انضم كمسوق</a></li>
-                <li><a href="login.html" class="text-slate-500 hover:text-indigo-600 transition-colors">تسجيل الدخول</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4 class="font-bold text-slate-900 text-sm mb-3">الدعم</h4>
-            <ul class="space-y-2 text-xs">
-                <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">الأسئلة الشائعة</a></li>
-                <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">اتصل بنا</a></li>
-                <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">الدعم الفني</a></li>
-            </ul>
-        </div>
-        <div>
-            <h4 class="font-bold text-slate-900 text-sm mb-3">قانوني</h4>
-            <ul class="space-y-2 text-xs">
-                <li><a href="terms.html" class="text-slate-500 hover:text-indigo-600 transition-colors">شروط الاستخدام</a></li>
-                <li><a href="privacy.html" class="text-slate-500 hover:text-indigo-600 transition-colors">سياسة الخصوصية</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-6 mt-6">
-        جميع الحقوق محفوظة منصة Sellora &copy; 2026
-    </div>
-</footer>
+    </footer>
 
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script type="module">
-        // التحقق من حالة الجلسة وإعادة التوجيه إلى لوحة التحكم المناسبة إذا كان المستخدم مسجل الدخول مسبقاً
-        import { supabase } from './js/supabaseClient.js';
-
-        async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-                if (profile) {
-                    if (profile.role === 'admin') {
-                        window.location.href = 'admin-dash.html';
-                    } else {
-                        window.location.href = 'reseller-dash.html';
-                    }
-                }
-            }
-        }
-        checkSession();
-    </script>
 </body>
 </html>
