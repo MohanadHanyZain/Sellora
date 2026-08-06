@@ -83,6 +83,9 @@
         جميع الحقوق محفوظة منصة Sellora &copy; 2026
     </footer>
 
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- JavaScript Logic -->
     <script type="module">
         import { supabase } from './js/supabaseClient.js';
@@ -90,6 +93,22 @@
         const form = document.getElementById('login-form');
         const alertBox = document.getElementById('alert-box');
         const submitBtn = document.getElementById('submit-btn');
+
+        // التحقق من وجود جلسة نشطة مسبقاً
+        async function checkExistingSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+                if (profile) {
+                    if (profile.role === 'admin') {
+                        window.location.href = 'admin-dash.html';
+                    } else {
+                        window.location.href = 'reseller-dash.html';
+                    }
+                }
+            }
+        }
+        checkExistingSession();
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -102,7 +121,6 @@
             alertBox.classList.add('hidden');
 
             try {
-                // 1. تسجيل الدخول عبر Supabase Auth
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -110,7 +128,6 @@
 
                 if (error) throw error;
 
-                // 2. جلب دور المستخدم (Role) من جدول profiles لتوجيهه للصفحة الصحيحة
                 const userId = data.user.id;
                 const { data: profile, error: profileError } = await supabase
                     .from('profiles')
@@ -124,7 +141,6 @@
                 alertBox.textContent = 'تم تسجيل الدخول بنجاح! جاري تحويلك...';
                 alertBox.classList.remove('hidden');
 
-                // 3. التوجيه بناءً على الصلاحية (Admin أو Reseller)
                 setTimeout(() => {
                     if (profile.role === 'admin') {
                         window.location.href = 'admin-dash.html';

@@ -97,6 +97,9 @@
         جميع الحقوق محفوظة منصة Sellora &copy; 2026
     </footer>
 
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- JavaScript Logic -->
     <script type="module">
         import { supabase } from './js/supabaseClient.js';
@@ -104,6 +107,22 @@
         const form = document.getElementById('register-form');
         const alertBox = document.getElementById('alert-box');
         const submitBtn = document.getElementById('submit-btn');
+
+        // التحقق من وجود جلسة نشطة مسبقاً
+        async function checkExistingSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+                if (profile) {
+                    if (profile.role === 'admin') {
+                        window.location.href = 'admin-dash.html';
+                    } else {
+                        window.location.href = 'reseller-dash.html';
+                    }
+                }
+            }
+        }
+        checkExistingSession();
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -118,7 +137,7 @@
             alertBox.classList.add('hidden');
 
             try {
-                // 1. تسجيل الحساب عبر Supabase Auth مع تمرير الاسم ورقم الهاتف في الـ metadata
+                // تسجيل الحساب مع البيانات الإضافية
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -132,7 +151,10 @@
 
                 if (error) throw error;
 
-                // إظهار رسالة النجاح
+                // التحقق من إنشاء الـ profile تلقائياً عن طريق trigger في قاعدة البيانات
+                // ننتظر قليلاً لنضمن إنشاء الـ profile
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
                 alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200';
                 alertBox.textContent = 'تم إنشاء الحساب بنجاح! جاري تحويلك إلى لوحة التحكم...';
                 alertBox.classList.remove('hidden');
