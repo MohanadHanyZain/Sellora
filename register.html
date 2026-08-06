@@ -65,12 +65,20 @@
             <!-- Register Form -->
             <form id="register-form" class="space-y-4">
                 <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">الاسم الكامل</label>
+                    <input type="text" id="register-name" required placeholder="أدخل اسمك الكامل" class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="register-phone" required placeholder="01012345678" class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
+                </div>
+                <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">البريد الإلكتروني</label>
-                    <input type="email" id="register-email" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
+                    <input type="email" id="register-email" required placeholder="name@example.com" class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">كلمة المرور</label>
-                    <input type="password" id="register-password" required class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
+                    <input type="password" id="register-password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 border border-lightBorder rounded-xl text-sm focus:outline-emeraldPrimary">
                 </div>
                 <button type="submit" id="submit-btn" class="w-full py-3 bg-emeraldPrimary hover:bg-emeraldHover text-white font-semibold rounded-xl text-sm shadow-md transition-all">
                     إنشاء حساب مسوق
@@ -106,6 +114,46 @@
             alertBox.textContent = message;
             alertBox.className = `p-3 rounded-xl text-xs font-semibold ${isError ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
             alertBox.classList.remove('hidden');
+        }
+
+        // Handle Register
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            const fullName = document.getElementById('register-name').value.trim();
+            const phone = document.getElementById('register-phone').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري إنشاء الحساب...';
+
+            // إرسال البيانات مع الـ options.data لكي يلتقطها الـ Trigger في جدول profiles
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                        phone: phone
+                    }
+                }
+            });
+
+            if (error) {
+                showAlert(error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إنشاء حساب مسوق';
+            } else {
+                showAlert('تم إنشاء الحساب بنجاح! يتم توجيهك لتسجيل الدخول...', false);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>            alertBox.classList.remove('hidden');
         }
 
         // Handle Register
