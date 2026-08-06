@@ -26,8 +26,6 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: #f8fafc; color: #0f172a; }
     </style>
@@ -99,11 +97,9 @@
         </div>
     </footer>
 
-    <!-- Supabase Configuration & Logic Script -->
-    <script>
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <!-- Supabase Logic Script (ES Module) -->
+    <script type="module">
+        import { supabase } from './js/supabaseClient.js';
 
         function showAlert(message, isError = true) {
             const alertBox = document.getElementById('alert-box');
