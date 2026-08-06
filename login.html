@@ -117,21 +117,44 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'جاري تسجيل الدخول...';
 
-            const { data, error } = await supabase.auth.signInWithPassword({
+            // 1. تسجيل الدخول عبر Auth
+            const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
 
-            if (error) {
-                showAlert(error.message);
+            if (authError) {
+                showAlert(authError.message);
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'تسجيل الدخول';
-            } else {
-                showAlert('تم تسجيل الدخول بنجاح! يتم توجيهك...', false);
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                return;
             }
+
+            // 2. جلب بيانات الـ Role من جدول profiles باستخدام الـ id الخاص بالمستخدم المسجل
+            const userId = authData.user.id;
+            const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', userId)
+                .single();
+
+            if (profileError) {
+                showAlert('فشل في جلب بيانات الحساب من قاعدة البيانات.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'تسجيل الدخول';
+                return;
+            }
+
+            showAlert('تم تسجيل الدخول بنجاح! يتم توجيهك...', false);
+
+            // 3. التوجيه بناءً على الـ Role
+            setTimeout(() => {
+                if (profileData && profileData.role === 'admin') {
+                    window.location.href = 'admin-dash.html';
+                } else {
+                    window.location.href = 'reseller-dash.html';
+                }
+            }, 1000);
         });
     </script>
 </body>
