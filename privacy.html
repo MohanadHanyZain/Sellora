@@ -11,238 +11,84 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#4f46e5',
-                        primaryHover: '#4338ca',
+                        lightBg: '#f8fafc',
+                        lightCard: '#ffffff',
+                        lightBorder: '#e2e8f0',
+                        emeraldPrimary: '#059669',
+                        emeraldHover: '#047857',
+                        emeraldLight: '#ecfdf5',
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        .bg-gradient-main {
-            background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
-        }
-        .privacy-content h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-        .privacy-content p {
-            color: #475569;
-            line-height: 1.8;
-            font-size: 0.95rem;
-            margin-bottom: 0.75rem;
-        }
-        .privacy-content ul {
-            list-style: disc;
-            padding-right: 1.5rem;
-            color: #475569;
-            line-height: 1.8;
-            font-size: 0.95rem;
-            margin-bottom: 0.75rem;
-        }
-        .privacy-content ul li {
-            margin-bottom: 0.4rem;
-        }
-    </style>
+    <!-- Google Fonts (IBM Plex Sans Arabic) -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-lightBg text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
     <!-- Navbar -->
-    <header class="w-full bg-white/80 backdrop-blur-md border-b border-slate-100 py-4 px-6 flex justify-between items-center shadow-sm sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-black text-xl shadow-md shadow-indigo-200">
-                S
+    <header class="w-full bg-lightCard border-b border-lightBorder py-4 px-4 sm:px-8 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="w-10 h-10 rounded-xl bg-emeraldPrimary flex items-center justify-center text-white font-bold text-xl shadow-sm">
+                    S
+                </a>
+                <div>
+                    <a href="index.html" class="text-lg font-bold tracking-tight text-slate-900 block leading-tight">Sellora</a>
+                    <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">منصة التسويق</span>
+                </div>
             </div>
-            <a href="index.html" class="text-2xl font-black tracking-tight text-slate-900">Sellora</a>
-        </div>
-        <div class="flex items-center gap-3">
-            <a href="login.html" class="px-5 py-2.5 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">تسجيل الدخول</a>
-            <a href="register.html" class="px-5 py-2.5 text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5">انضم كمسوق</a>
+            <div>
+                <a href="index.html" class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emeraldPrimary transition-colors"><i class="fa-solid fa-arrow-right ml-1"></i> الرئيسية</a>
+            </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow py-12 px-4 sm:px-6 bg-gradient-main">
-        <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 p-8 sm:p-12">
-            
-            <div class="text-center mb-10">
-                <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto text-indigo-600 text-3xl mb-4">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3">سياسة الخصوصية</h1>
-                <p class="text-sm text-slate-500">آخر تحديث: 1 أغسطس 2026</p>
-                <div class="w-20 h-1 bg-indigo-600 mx-auto mt-4 rounded-full"></div>
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-lightCard border border-lightBorder rounded-2xl p-6 sm:p-10 shadow-xs space-y-6">
+            <div class="border-b border-lightBorder pb-4">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">سياسة الخصوصية</h1>
+                <p class="text-xs text-slate-400 mt-1">آخر تحديث: 2026</p>
             </div>
 
-            <div class="privacy-content prose prose-slate max-w-none">
-                <p class="text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <i class="fa-solid fa-info-circle text-indigo-600 ml-2"></i>
-                    نحن في Sellora نولي خصوصية بياناتك أهمية قصوى. توضح هذه السياسة كيفية جمع واستخدام وحماية معلوماتك الشخصية.
-                </p>
+            <div class="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <h3 class="font-bold text-slate-900 text-base">1. مقدمة</h3>
+                <p>نحن في منصة Sellora نولي اهتماماً بالغاً بخصوصيتك. توضح سياسة الخصوصية هذه كيف نقوم بجمع، استخدام، وحماية بياناتك الشخصية عند استخدامك للمنصة.</p>
 
-                <h2>1. المعلومات التي نجمعها</h2>
-                <ul>
-                    <li><strong>معلومات التسجيل:</strong> الاسم الكامل، البريد الإلكتروني، رقم الهاتف، وكلمة المرور المشفرة.</li>
-                    <li><strong>معلومات الدفع:</strong> بيانات الحساب البنكي أو محفظة الهاتف المحمول لعمليات السحب.</li>
-                    <li><strong>معلومات الاستخدام:</strong> بيانات الدخول، الروابط التي يتم النقر عليها، والصفحات التي يتم زيارتها.</li>
-                    <li><strong>معلومات الجهاز:</strong> نوع الجهاز، نظام التشغيل، عنوان IP، ونوع المتصفح.</li>
-                </ul>
+                <h3 class="font-bold text-slate-900 text-base">2. البيانات التي نقوم بجمعها</h3>
+                <p>نقوم بجمع بعض المعلومات الأساسية لتقديم وتسهيل الخدمات مثل: الاسم، بريدك الإلكتروني، رقم الهاتف، وبيانات الطلبات والأرباح الخاصة بك كمسوق.</p>
 
-                <h2>2. كيفية استخدام معلوماتك</h2>
-                <ul>
-                    <li>إنشاء وإدارة حسابك على المنصة.</li>
-                    <li>تتبع أدائك كمسوق وحساب العمولات المستحقة.</li>
-                    <li>معالجة طلبات السحب والدفع.</li>
-                    <li>تحسين تجربة المستخدم وتطوير خدمات المنصة.</li>
-                    <li>إرسال إشعارات وتحديثات مهمة حول المنصة.</li>
-                    <li>تقديم الدعم الفني والرد على استفساراتك.</li>
-                </ul>
+                <h3 class="font-bold text-slate-900 text-base">3. استخدام البيانات</h3>
+                <p>نستخدم البيانات التي جمعناها لغرض إدارة حسابك، معالجة الطلبات، تحسين أداء المنصة، والتواصل معك بشأن الأرباح والتحديثات الهامة.</p>
 
-                <h2>3. مشاركة المعلومات مع أطراف ثالثة</h2>
-                <ul>
-                    <li>لا نقوم ببيع أو تأجير بياناتك الشخصية لأي طرف ثالث.</li>
-                    <li>قد نشارك بياناتك مع شركاء موثوقين لتقديم خدمات مثل معالجة الدفع وتحليل البيانات.</li>
-                    <li>قد نكشف عن معلوماتك إذا طلب القانون ذلك أو لحماية حقوق المنصة.</li>
-                    <li>نشارك البيانات الضرورية مع شركات الشحن لتوصيل الطلبات.</li>
-                </ul>
+                <h3 class="font-bold text-slate-900 text-base">4. حماية البيانات وأمنها</h3>
+                <p>نحن نتبع أفضل الممارسات والمعايير الأمنية لحماية معلوماتك الشخصية ومنع الوصول غيرAuthorized أو التعديل أو الإفصاح عنها.</p>
 
-                <h2>4. حماية بياناتك</h2>
-                <ul>
-                    <li>نستخدم تقنيات تشفير متقدمة لحماية بياناتك أثناء النقل والتخزين.</li>
-                    <li>نطبق إجراءات أمنية صارمة لمنع الوصول غير المصرح به.</li>
-                    <li>يتم تخزين كلمات المرور بشكل مشفر ولا يمكن لأي شخص الاطلاع عليها.</li>
-                    <li>نقوم بمراجعة و تحديث إجراءات الأمان بشكل دوري.</li>
-                </ul>
-
-                <h2>5. ملفات تعريف الارتباط (Cookies)</h2>
-                <ul>
-                    <li>نستخدم ملفات تعريف الارتباط لتحسين تجربة المستخدم وتذكر تفضيلاته.</li>
-                    <li>تساعدنا هذه الملفات في تحليل أداء المنصة وتحسين خدماتنا.</li>
-                    <li>يمكنك تعطيل ملفات تعريف الارتباط من خلال إعدادات المتصفح الخاص بك.</li>
-                    <li>قد يؤثر تعطيلها على بعض وظائف المنصة.</li>
-                </ul>
-
-                <h2>6. حقوقك فيما يتعلق ببياناتك</h2>
-                <ul>
-                    <li>حق الوصول إلى البيانات التي نحتفظ بها عنك.</li>
-                    <li>حق تصحيح أي معلومات غير دقيقة.</li>
-                    <li>حق حذف حسابك وبياناتك في أي وقت.</li>
-                    <li>حق الاعتراض على معالجة بياناتك لأغراض تسويقية.</li>
-                    <li>حق نقل بياناتك إلى منصة أخرى.</li>
-                </ul>
-
-                <h2>7. الاحتفاظ بالبيانات</h2>
-                <ul>
-                    <li>نحتفظ ببياناتك طالما كان حسابك نشطاً أو حسب الحاجة لتقديم الخدمات.</li>
-                    <li>قد نحتفظ ببعض البيانات لفترات أطول للامتثال للالتزامات القانونية.</li>
-                    <li>عند طلب حذف الحساب، نقوم بحذف بياناتك خلال 30 يوماً.</li>
-                </ul>
-
-                <h2>8. خصوصية الأطفال</h2>
-                <ul>
-                    <li>منصتنا موجهة للأشخاص الذين تزيد أعمارهم عن 18 عاماً.</li>
-                    <li>لا نجمع عن قصد بيانات من الأشخاص الذين تقل أعمارهم عن 18 عاماً.</li>
-                    <li>إذا اكتشفنا أننا جمعنا بيانات من طفل، سنقوم بحذفها فوراً.</li>
-                </ul>
-
-                <h2>9. التعديلات على سياسة الخصوصية</h2>
-                <ul>
-                    <li>قد نقوم بتحديث هذه السياسة من وقت لآخر.</li>
-                    <li>سيتم إخطارك بأي تغييرات جوهرية عبر البريد الإلكتروني أو إشعار داخل المنصة.</li>
-                    <li>استمرار استخدامك للمنصة بعد التحديث يعتبر موافقة على السياسة الجديدة.</li>
-                </ul>
-
-                <h2>10. التواصل معنا</h2>
-                <p>
-                    إذا كان لديك أي أسئلة أو استفسارات حول سياسة الخصوصية، يمكنك التواصل معنا عبر:
-                </p>
-                <ul>
-                    <li><strong>البريد الإلكتروني:</strong> support@sellora.com</li>
-                    <li><strong>الدعم الفني:</strong> عبر لوحة التحكم في قسم المحادثات.</li>
-                    <li><strong>وسائل التواصل الاجتماعي:</strong> من خلال صفحاتنا الرسمية.</li>
-                </ul>
-
-                <div class="mt-10 p-6 bg-indigo-50 rounded-2xl border border-indigo-100 text-center">
-                    <p class="text-sm text-slate-700">
-                        <i class="fa-solid fa-lock text-indigo-600 text-lg ml-2"></i>
-                        بياناتك في أمان مع Sellora. نحن نلتزم بحماية خصوصيتك في جميع الأوقات.
-                    </p>
-                    <a href="register.html" class="inline-block mt-4 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5 text-sm">
-                        <i class="fa-solid fa-rocket ml-2"></i> أنشئ حسابك الآن
-                    </a>
-                </div>
+                <h3 class="font-bold text-slate-900 text-base">5. التعديلات على السياسة</h3>
+                <p>يحق لنا تحديث سياسة الخصوصية هذه من وقت لآخر، وسيتم إشعارك بأي تغييرات جوهرية عبر نشر النسخة المحدثة هنا.</p>
             </div>
-
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="w-full bg-white border-t border-slate-100 py-8">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-right">
+    <footer class="w-full bg-lightCard border-t border-lightBorder py-8 px-4 sm:px-8 mt-16">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
             <div>
-                <h4 class="font-bold text-slate-900 text-sm mb-3">Sellora</h4>
-                <p class="text-xs text-slate-500 leading-relaxed">منصة التسويق بالعمولة الرائدة في مصر والوطن العربي.</p>
-                <div class="flex gap-3 mt-3">
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-brands fa-facebook text-base"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-brands fa-instagram text-base"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i class="fa-brands fa-youtube text-base"></i></a>
-                </div>
+                جميع الحقوق محفوظة منصة Sellora &copy; 2026
             </div>
-            <div>
-                <h4 class="font-bold text-slate-900 text-sm mb-3">روابط سريعة</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="index.html" class="text-slate-500 hover:text-indigo-600 transition-colors">الرئيسية</a></li>
-                    <li><a href="register.html" class="text-slate-500 hover:text-indigo-600 transition-colors">انضم كمسوق</a></li>
-                    <li><a href="login.html" class="text-slate-500 hover:text-indigo-600 transition-colors">تسجيل الدخول</a></li>
-                </ul>
+            <div class="flex items-center gap-6 font-semibold">
+                <a href="terms.html" class="hover:text-emeraldPrimary transition-colors">شروط الاستخدام</a>
+                <a href="privacy.html" class="text-emeraldPrimary">سياسة الخصوصية</a>
             </div>
-            <div>
-                <h4 class="font-bold text-slate-900 text-sm mb-3">الدعم</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">الأسئلة الشائعة</a></li>
-                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">اتصل بنا</a></li>
-                    <li><a href="#" class="text-slate-500 hover:text-indigo-600 transition-colors">الدعم الفني</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold text-slate-900 text-sm mb-3">قانوني</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="terms.html" class="text-slate-500 hover:text-indigo-600 transition-colors">شروط الاستخدام</a></li>
-                    <li><a href="privacy.html" class="text-indigo-600 font-semibold transition-colors">سياسة الخصوصية</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-center text-xs text-slate-400 border-t border-slate-100 pt-6 mt-6">
-            جميع الحقوق محفوظة منصة Sellora &copy; 2026
         </div>
     </footer>
 
-    <script type="module">
-        // التحقق من حالة الجلسة وإعادة التوجيه إلى لوحة التحكم المناسبة إذا كان المستخدم مسجل الدخول مسبقاً
-        import { supabase } from './js/supabaseClient.js';
-
-        async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-                if (profile) {
-                    if (profile.role === 'admin') {
-                        window.location.href = 'admin-dash.html';
-                    } else {
-                        window.location.href = 'reseller-dash.html';
-                    }
-                }
-            }
-        }
-        checkSession();
-    </script>
 </body>
 </html>
